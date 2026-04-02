@@ -1,42 +1,48 @@
 require('dotenv').config();
-const { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes, EmbedBuilder } = require('discord.js');
+const { 
+  Client, 
+  GatewayIntentBits, 
+  SlashCommandBuilder, 
+  REST, 
+  Routes, 
+  EmbedBuilder 
+} = require('discord.js');
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds]
 });
 
-// ===== COMANDO =====
 const ipCommand = new SlashCommandBuilder()
   .setName('ip')
   .setDescription('Muestra la información del servidor');
 
-// ===== REGISTRAR COMANDOS =====
 async function registerCommands() {
   const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
   try {
-    console.log('🔄 Registrando slash commands...');
+    console.log('🔄 Registrando comandos...');
+    console.log('CLIENT_ID:', process.env.CLIENT_ID);
+    console.log('GUILD_ID:', process.env.GUILD_ID);
 
     await rest.put(
-      Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
-      {
-        body: [ipCommand.toJSON()]
-      }
+      Routes.applicationGuildCommands(
+        process.env.CLIENT_ID,
+        process.env.GUILD_ID
+      ),
+      { body: [ipCommand.toJSON()] }
     );
 
-    console.log('✅ Comandos registrados');
+    console.log('✅ Slash command registrado correctamente');
   } catch (err) {
-    console.error('❌ Error registrando comandos:', err);
+    console.error('❌ ERROR REGISTRANDO COMANDOS:', err);
   }
 }
 
-// ===== BOT READY =====
 client.once('ready', async () => {
-  console.log(`✅ Conectado como ${client.user.tag}`);
+  console.log(`✅ Logeado como ${client.user.tag}`);
   await registerCommands();
 });
 
-// ===== INTERACCIONES =====
 client.on('interactionCreate', async interaction => {
   if (!interaction.isChatInputCommand()) return;
 
@@ -57,5 +63,4 @@ client.on('interactionCreate', async interaction => {
   }
 });
 
-// ===== LOGIN =====
 client.login(process.env.TOKEN);
