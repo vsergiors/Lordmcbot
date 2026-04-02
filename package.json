@@ -1,7 +1,7 @@
 {
   "name": "lordmc-bot",
   "version": "1.0.0",
-  "main": "Index.js",
+  "main": "index.js",
   "type": "commonjs",
   "scripts": {
     "start": "node index.js"
